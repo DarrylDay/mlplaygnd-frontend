@@ -1,5 +1,5 @@
 import React from "react";
 
 export default function page() {
-	return <div>TODO</div>;
+	return <div>Welcome! Please select an experiment.</div>;
 }

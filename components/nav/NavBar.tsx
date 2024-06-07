@@ -1,3 +1,4 @@
+"use client";
 import {
 	Bell,
 	ChevronDown,
@@ -18,8 +19,9 @@ import { Separator } from "@/components/ui/separator";
 import { usePathname } from "next/navigation";
 import UserDropdown from "../UserDropdown";
 import NavLink from "./NavLink";
+import { User } from "@supabase/supabase-js";
 
-export default function NavBar() {
+export default function NavBar({ user }: { user: User }) {
 	const pathname = usePathname();
 
 	return (
@@ -33,7 +35,7 @@ export default function NavBar() {
 					<span className="">ML PlayGND</span>
 				</Link>
 				<div className="ml-auto">
-					<UserDropdown />
+					<UserDropdown email={user.email} />
 				</div>
 			</div>
 			<div className="flex-1">

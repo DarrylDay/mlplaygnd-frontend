@@ -9,8 +9,9 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { CircleUser, User } from "lucide-react";
+import { logout } from "@/app/actions";
 
-export default function UserDropdown() {
+export default async function UserDropdown({ email }: { email?: string }) {
 	return (
 		<>
 			<DropdownMenu>
@@ -25,14 +26,17 @@ export default function UserDropdown() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
-					<DropdownMenuLabel>My Account</DropdownMenuLabel>
+					<DropdownMenuLabel>{email}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					<DropdownMenuItem>Settings</DropdownMenuItem>
 					<DropdownMenuItem>Support</DropdownMenuItem>
 					<DropdownMenuSeparator />
-					<DropdownMenuItem>Logout</DropdownMenuItem>
+					<DropdownMenuItem onClick={() => logout()}>
+						Logout
+					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
 		</>
 	);
 }
+//
