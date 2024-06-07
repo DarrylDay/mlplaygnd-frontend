@@ -21,8 +21,7 @@ export default function Home() {
 		const imgRes = await fetch(data);
 		const imgBlob = await imgRes.blob();
 
-		const url = "http://127.0.0.1:5000/predict";
-		//const url = "http://localhost:5000/predict";
+		const url = process.env.NEXT_PUBLIC_BACKEND_API_URL + "/predict";
 		const formData = new FormData();
 		formData.append("file", imgBlob);
 		const res = await fetch(url, {
@@ -39,8 +38,8 @@ export default function Home() {
 	}
 
 	return (
-		<main className="w-full h-screen flex justify-center">
-			<div className="flex flex-col gap-2 w-full h-full max-w-[500px] items-center justify-center">
+		<main className="w-full h-full flex justify-center">
+			<div className="flex flex-col gap-2 w-full max-w-[500px] items-center justify-center">
 				<div className="w-[200px] h-[200px]">
 					<ReactSketchCanvas
 						ref={canvasRef}
