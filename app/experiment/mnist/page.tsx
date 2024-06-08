@@ -3,7 +3,6 @@ import Image from "next/image";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 export default function Home() {
 	const [pred, setPred] = useState<string>();

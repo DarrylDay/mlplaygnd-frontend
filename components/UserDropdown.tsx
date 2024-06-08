@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Button } from "./ui/button";
 import {
@@ -19,9 +20,9 @@ export default async function UserDropdown({ email }: { email?: string }) {
 					<Button
 						variant="outline"
 						size="icon"
-						className="w-9 h-9 rounded-full"
+						className="rounded-full"
 					>
-						<User className="h-4 w-4" />
+						<User className="h-5 w-5" />
 						<span className="sr-only">Toggle user menu</span>
 					</Button>
 				</DropdownMenuTrigger>
