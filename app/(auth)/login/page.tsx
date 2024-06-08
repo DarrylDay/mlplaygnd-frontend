@@ -42,7 +42,7 @@ export default function LoginPage() {
 							id="email"
 							type="email"
 							name="email"
-							placeholder="m@example.com"
+							placeholder="me@example.com"
 							required
 						/>
 					</div>
