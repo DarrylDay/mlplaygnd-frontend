@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/actions";
+import { login } from "@/app/auth-actions";
 import { useFormState } from "react-dom";
 import FormSubmitButton from "@/components/FormSubmitButton";
 

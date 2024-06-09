@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import FormSubmitButton from "@/components/FormSubmitButton";
-import { signup } from "@/app/actions";
+import { signup } from "@/app/auth-actions";
 import { useFormState } from "react-dom";
 
 const initialState = {

@@ -10,9 +10,9 @@ import {
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { CircleUser, User } from "lucide-react";
-import { logout } from "@/app/actions";
+import { logout } from "@/app/auth-actions";
 
-export default async function UserDropdown({ email }: { email?: string }) {
+export default function UserDropdown({ email }: { email?: string }) {
 	return (
 		<>
 			<DropdownMenu>
