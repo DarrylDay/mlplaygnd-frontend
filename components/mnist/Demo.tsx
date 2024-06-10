@@ -5,6 +5,18 @@ import { Oval } from "react-loader-spinner";
 import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { Button } from "../ui/button";
 import { Tables } from "@/lib/schema";
+import Lottie from "react-lottie";
+import congrats from "@/public/lotties/Congrats.json";
+import { toast } from "sonner";
+
+const congratsOptions = {
+	loop: false,
+	autoplay: false,
+	animationData: congrats,
+	rendererSettings: {
+		preserveAspectRatio: "xMidYMid slice",
+	},
+};
 
 export default function Demo() {
 	const [loading, setLoading] = useState(false);
@@ -12,6 +24,7 @@ export default function Demo() {
 	const [pred, setPred] = useState<Tables<"mnist_predictions">>();
 	const [timeoutID, setTimeoutID] = useState<NodeJS.Timeout>();
 	const canvasRef = useRef<ReactSketchCanvasRef>(null);
+	const congratsRef = useRef<any>(null);
 
 	async function handleCanvasSubmit() {
 		clearTimeout(timeoutID);
@@ -32,6 +45,12 @@ export default function Demo() {
 		const supabase = createClient();
 		const { data, error } = await supabase.auth.getSession();
 
+		if (error) {
+			toast.error("Could not validate user.");
+			setLoading(false);
+			return;
+		}
+
 		const res = await fetch(url, {
 			method: "POST",
 			body: formData,
@@ -40,16 +59,32 @@ export default function Demo() {
 				Authorization: "Bearer " + data.session?.access_token,
 			},
 		});
-		const json = await res.json();
-		console.log(json);
 
-		setShowConfirmation(true);
-		setPred(json);
-		setLoading(false);
+		if (!res.ok) {
+			toast.error("Could not get prediction.");
+			setLoading(false);
+			return;
+		}
+
+		try {
+			const json = await res.json();
+			setShowConfirmation(true);
+			setPred(json);
+			setLoading(false);
+		} catch (err) {
+			toast.error("Could not get prediction.");
+			setLoading(false);
+			return;
+		}
 	}
 
 	async function setCorrect(correct: boolean) {
 		if (!pred || (pred.correct != null && pred.correct == correct)) return;
+
+		if (correct) {
+			congratsRef.current.stop();
+			congratsRef.current.play();
+		}
 
 		const supabase = createClient();
 		const { error } = await supabase
@@ -58,6 +93,7 @@ export default function Demo() {
 			.eq("id", pred.id);
 
 		if (error) {
+			toast.error("Correction could not be updated.");
 			console.log(error);
 			return;
 		}
@@ -75,7 +111,7 @@ export default function Demo() {
 			<p className="text-justify">
 				Draw a digit on the black sqaure and see the prediction.
 			</p>
-			<div className="flex gap-4 min-[480px]:gap-12 flex-wrap items-center justify-center">
+			<div className="flex gap-4 mt-2 min-[480px]:gap-12 flex-wrap items-center justify-center">
 				<div className="text-center">
 					<div className="w-[200px] h-[200px]">
 						<ReactSketchCanvas
@@ -129,10 +165,18 @@ export default function Demo() {
 					<p>Correct?</p>
 					<Button
 						variant={"outline"}
-						className={pred?.correct ? "bg-green-400" : ""}
+						className={
+							pred?.correct ? "bg-green-400 relative" : "relative"
+						}
 						onClick={() => setCorrect(true)}
 					>
 						👍
+						<div className="absolute w-[400px] h-[400px] pointer-events-none">
+							<Lottie
+								ref={congratsRef}
+								options={congratsOptions}
+							/>
+						</div>
 					</Button>
 					<Button
 						variant={"outline"}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import "@radix-ui/themes/styles.css";
 
@@ -19,7 +20,10 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<Theme>{children}</Theme>
+				<Theme>
+					{children}
+					<Toaster />
+				</Theme>
 			</body>
 		</html>
 	);

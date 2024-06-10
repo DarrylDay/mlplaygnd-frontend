@@ -3,6 +3,7 @@ import Logo from "@/components/Logo";
 import UserDropdown from "@/components/UserDropdown";
 import NavBar from "@/components/nav/NavBar";
 import { Button } from "@/components/ui/button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { requireUser } from "@/lib/supabase/server";
 import { Menu } from "lucide-react";
@@ -41,9 +42,11 @@ export default async function Layout({
 						<div className="w-full flex-1"></div>
 						<UserDropdown email={user.email} />
 					</header>
-					<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-						{children}
-					</main>
+					<ScrollArea className="h-screen -mt-16 pt-16">
+						<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+							{children}
+						</main>
+					</ScrollArea>
 				</div>
 			</div>
 		</>
