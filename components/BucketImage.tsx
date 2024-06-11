@@ -1,6 +1,7 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 export default function BucketImage({
 	bucket,
@@ -41,5 +42,18 @@ export default function BucketImage({
 		getImage();
 	}, [bucket, filePath]);
 
-	return <img src={src} width={width} height={height} alt={"bucket image"} />;
+	return (
+		<>
+			{src != "" ? (
+				<img
+					src={src}
+					width={width}
+					height={height}
+					alt={"bucket image"}
+				/>
+			) : (
+				<Skeleton style={{ width: width, height: height }} />
+			)}
+		</>
+	);
 }

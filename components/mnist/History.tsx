@@ -32,6 +32,30 @@ export default function History() {
 		Tables<"mnist_predictions">[] | null
 	>();
 
+	async function updateCorrect(
+		correct: boolean,
+		pred: Tables<"mnist_predictions">
+	) {
+		const supabase = createClient();
+		const { error } = await supabase
+			.from("mnist_predictions")
+			.update({ correct: correct })
+			.eq("id", pred.id);
+
+		if (error) {
+			toast.error("Correction could not be updated.");
+			console.log(error);
+			return;
+		}
+
+		setHistory(
+			history?.map((x) => {
+				if (x.id == pred.id) return { ...pred, correct: correct };
+				else return x;
+			})
+		);
+	}
+
 	useEffect(() => {
 		async function getHistory() {
 			// await new Promise((r) => setTimeout(r, 2000));
@@ -118,6 +142,9 @@ export default function History() {
 												? "no"
 												: undefined
 										}
+										onValueChange={(v) => {
+											updateCorrect(v == "yes", x);
+										}}
 									>
 										<SelectTrigger className="w-[100px]">
 											<SelectValue placeholder="-" />
