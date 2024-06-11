@@ -42,7 +42,7 @@ export default async function Layout({
 						<div className="w-full flex-1"></div>
 						<UserDropdown email={user.email} />
 					</header>
-					<ScrollArea className="h-screen -mt-16 pt-16">
+					<ScrollArea className="h-[calc(100vh-60px)]">
 						<main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
 							{children}
 						</main>
