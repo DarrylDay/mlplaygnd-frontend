@@ -107,8 +107,10 @@ export default function History() {
 						<TableHead className="text-center">
 							Prediction
 						</TableHead>
-						<TableHead className="text-center">Date</TableHead>
-						<TableHead className="w-[100px] text-center ">
+						<TableHead className="text-center hidden sm:table-cell">
+							Date
+						</TableHead>
+						<TableHead className="w-[80px] sm:w-[100px] text-center">
 							Correct
 						</TableHead>
 					</TableRow>
@@ -130,10 +132,10 @@ export default function History() {
 								<TableCell className="text-center text-[64px]">
 									{x.prediction}
 								</TableCell>
-								<TableCell className="text-center">
+								<TableCell className="text-center hidden sm:table-cell">
 									{new Date(x.created_at).toLocaleString()}
 								</TableCell>
-								<TableCell className="w-[100px]">
+								<TableCell className="w-[80px] sm:w-[100px]">
 									<Select
 										value={
 											x.correct
@@ -146,7 +148,7 @@ export default function History() {
 											updateCorrect(v == "yes", x);
 										}}
 									>
-										<SelectTrigger className="w-[100px]">
+										<SelectTrigger className="w-[80px] sm:w-[100px]">
 											<SelectValue placeholder="-" />
 										</SelectTrigger>
 										<SelectContent>
