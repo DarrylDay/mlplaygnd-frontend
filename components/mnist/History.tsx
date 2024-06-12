@@ -22,12 +22,17 @@ import {
 import { toast } from "sonner";
 import Image from "next/image";
 import BucketImage from "../BucketImage";
-import { User } from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
+import { DataTablePagination } from "../common/table/DataTablePagination";
+import { DataTable, useDataTable } from "../common/table/DataTable";
+import { getColumns } from "./HistoryTableColumns";
+import { useWindowDimensions } from "@/lib/useWindowDimensions";
+import HistoryTableResize from "./HistoryTableResize";
 
 let init = false;
 
 export default function History() {
-	const [user, setUser] = useState<User>();
+	const [session, setSession] = useState<Session>();
 	const [history, setHistory] = useState<
 		Tables<"mnist_predictions">[] | null
 	>();
@@ -56,22 +61,25 @@ export default function History() {
 		);
 	}
 
+	const table = useDataTable<Tables<"mnist_predictions">>({
+		columns: getColumns(updateCorrect, session),
+		data: history ?? [],
+	});
+
 	useEffect(() => {
+		table.setPageSize(5);
 		async function getHistory() {
-			// await new Promise((r) => setTimeout(r, 2000));
-			// setHistory([]);
-			// return;
-
+			console.log("get history");
 			const supabase = createClient();
-			const userRes = await supabase.auth.getUser();
+			const sessionRes = await supabase.auth.getSession();
 
-			if (userRes.error) {
+			if (sessionRes.error || !sessionRes.data.session) {
 				setHistory([]);
 				toast.error("Could not fetch previous predictions.");
 				return;
 			}
 
-			setUser(userRes.data.user);
+			setSession(sessionRes.data.session);
 
 			const { data, error } = await supabase
 				.from("mnist_predictions")
@@ -83,7 +91,7 @@ export default function History() {
 				toast.error("Could not fetch previous predictions.");
 				return;
 			}
-
+			console.log("set history");
 			setHistory(data);
 		}
 
@@ -97,102 +105,9 @@ export default function History() {
 		<div className="flex flex-col gap-4">
 			<h1 className="text-4xl font-bold">History</h1>
 
-			<Table>
-				{/* <TableCaption>A list of your recent invoices.</TableCaption> */}
-				<TableHeader>
-					<TableRow>
-						<TableHead className="w-[150px] text-center ">
-							Input
-						</TableHead>
-						<TableHead className="text-center">
-							Prediction
-						</TableHead>
-						<TableHead className="text-center hidden sm:table-cell">
-							Date
-						</TableHead>
-						<TableHead className="w-[80px] sm:w-[100px] text-center">
-							Correct
-						</TableHead>
-					</TableRow>
-				</TableHeader>
-				<TableBody>
-					{user && history && history.length > 0 ? (
-						history.map((x, i) => (
-							<TableRow key={i}>
-								<TableCell className="font-medium">
-									<BucketImage
-										key={i}
-										bucket={x.img_bucket}
-										user_id={user?.id}
-										filePath={x.img_filename}
-										width={100}
-										height={100}
-									/>
-								</TableCell>
-								<TableCell className="text-center text-[64px]">
-									{x.prediction}
-								</TableCell>
-								<TableCell className="text-center hidden sm:table-cell">
-									{new Date(x.created_at).toLocaleString()}
-								</TableCell>
-								<TableCell className="w-[80px] sm:w-[100px]">
-									<Select
-										value={
-											x.correct
-												? "yes"
-												: x.correct != null
-												? "no"
-												: undefined
-										}
-										onValueChange={(v) => {
-											updateCorrect(v == "yes", x);
-										}}
-									>
-										<SelectTrigger className="w-[80px] sm:w-[100px]">
-											<SelectValue placeholder="-" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="yes">
-												Yes
-											</SelectItem>
-											<SelectItem value="no">
-												No
-											</SelectItem>
-										</SelectContent>
-									</Select>
-								</TableCell>
-							</TableRow>
-						))
-					) : history && history.length == 0 ? (
-						<TableRow>
-							<TableCell
-								colSpan={4}
-								className="h-24 text-center font-medium"
-							>
-								No previous predictions
-							</TableCell>
-						</TableRow>
-					) : (
-						<>
-							<TableRow>
-								<TableCell colSpan={4} className="h-24">
-									<Skeleton className="h-full w-full" />
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell colSpan={4} className="h-24">
-									<Skeleton className="h-full w-full" />
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell colSpan={4} className="h-24">
-									<Skeleton className="h-full w-full" />
-								</TableCell>
-							</TableRow>
-						</>
-					)}
-				</TableBody>
-			</Table>
+			<DataTable table={table} />
+			<DataTablePagination table={table} />
+			<HistoryTableResize table={table} />
 		</div>
 	);
 }

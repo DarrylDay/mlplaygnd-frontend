@@ -5,13 +5,11 @@ import { Skeleton } from "./ui/skeleton";
 
 export default function BucketImage({
 	bucket,
-	user_id,
 	filePath,
 	width,
 	height,
 }: {
 	bucket: string | null;
-	user_id: string | null;
 	filePath: string | null;
 	width: number;
 	height: number;
@@ -19,10 +17,19 @@ export default function BucketImage({
 	const [src, setSrc] = useState<string>("");
 
 	useEffect(() => {
+		console.log(filePath);
+
 		async function getImage() {
 			if (!bucket || !filePath) return;
 
 			const supabase = createClient();
+			const userRes = await supabase.auth.getSession();
+			const user_id = userRes.data.session?.user.id;
+
+			if (!user_id) {
+				console.log("Unable to get user details");
+				return;
+			}
 
 			const { data, error } = await supabase.storage
 				.from(bucket)
@@ -40,7 +47,7 @@ export default function BucketImage({
 		if (!bucket || !filePath) return;
 
 		getImage();
-	}, [bucket, filePath]);
+	}, []);
 
 	return (
 		<>
